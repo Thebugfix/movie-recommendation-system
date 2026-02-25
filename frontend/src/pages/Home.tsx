@@ -1,49 +1,43 @@
-import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
+import { useEffect, useState } from "react";
+import { fetchMovies } from "../services/api";
 import MovieRow from "../components/MovieRow";
-import Footer from "../components/Footer";
+import { useOutletContext } from "react-router-dom";
 
-import {
-  fetchPopularMovies,
-  fetchTopRatedMovies,
-  fetchTrendingMovies
-} from "../services/api";
+interface Movie {
+  id: string;
+  title: string;
+  poster: string;
+}
 
-const Home = () => {
+export default function Home() {
 
-  const [popular, setPopular] = useState([]);
-  const [topRated, setTopRated] = useState([]);
-  const [trending, setTrending] = useState([]);
+  // ✅ RECEIVE SEARCH FROM LAYOUT
+  const { search } = useOutletContext<{ search: string }>();
+
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [popular, setPopular] = useState<Movie[]>([]);
+  const [topRated, setTopRated] = useState<Movie[]>([]);
 
   useEffect(() => {
-    loadMovies();
+    fetchMovies("now_playing").then(setTrending);
+    fetchMovies("popular").then(setPopular);
+    fetchMovies("top_rated").then(setTopRated);
   }, []);
 
-  const loadMovies = async () => {
-
-    setPopular(await fetchPopularMovies());
-    setTopRated(await fetchTopRatedMovies());
-    setTrending(await fetchTrendingMovies());
-
-  };
+  const filteredTrending = trending.filter(movie =>
+    movie.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
+    <div className="page">
+      <h2>Trending</h2>
+      <MovieRow movies={filteredTrending} />
 
-    <div>
+      <h2>Popular</h2>
+      <MovieRow movies={popular} />
 
-      <Navbar />
-
-      <MovieRow title="Trending" movies={trending} />
-
-      <MovieRow title="Popular" movies={popular} />
-
-      <MovieRow title="Top Rated" movies={topRated} />
-
-      <Footer />
-
+      <h2>Top Rated</h2>
+      <MovieRow movies={topRated} />
     </div>
-
   );
-};
-
-export default Home;
+}

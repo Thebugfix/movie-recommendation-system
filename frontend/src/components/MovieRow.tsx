@@ -1,20 +1,21 @@
 import MovieCard from "./MovieCard";
 
-const MovieRow = ({ title, movies }: any) => {
+interface Movie {
+  id: string;
+  title: string;
+  poster: string;
+}
 
+interface MovieRowProps {
+  movies: Movie[];
+}
+
+const MovieRow = ({ movies }: MovieRowProps) => {
   return (
-    <div>
-
-      <h2>{title}</h2>
-
-      <div className="movie-row">
-
-        {movies.map((movie: any) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-
-      </div>
-
+    <div className="movie-row">
+      {movies.map((movie: Movie) => (
+        <MovieCard key={movie.id} movie={movie} />
+      ))}
     </div>
   );
 };

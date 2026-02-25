@@ -1,76 +1,73 @@
 import { useState } from "react";
 import { fetchMovieTrailer } from "../services/api";
+import { saveMovie } from "../services/favoriteApi";
+import { FaBookmark } from "react-icons/fa";
 
-interface MovieCardProps {
-  movie: any;
-}
-
-const MovieCard = ({ movie }: MovieCardProps) => {
+export default function MovieCard({ movie }: any) {
 
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerKey, setTrailerKey] = useState("");
 
-  // Handle click to open trailer
-  const handleClick = async () => {
-    try {
-      const trailer = await fetchMovieTrailer(movie.id);
+  // 🎬 Trailer
+  const handleTrailer = async () => {
+    const trailer = await fetchMovieTrailer(movie.id);
 
-      if (trailer) {
-        setTrailerKey(trailer.key);
-        setShowTrailer(true);
-      } else {
-        alert("Trailer not available");
-      }
-
-    } catch (error) {
-      console.error("Error fetching trailer:", error);
+    if (trailer) {
+      setTrailerKey(trailer.key);
+      setShowTrailer(true);
     }
   };
 
-  return (
-    <>
-      {/* Movie Card */}
-      <div className="movie-card" onClick={handleClick}>
-        <img
-          src={
-            movie.poster_path
-              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-              : "https://via.placeholder.com/300x450?text=No+Image"
-          }
-          alt={movie.title}
-          className="movie-poster"
-        />
+  // save
+  const handleSave = async () => {
+    await saveMovie({
+      movieId: movie.id,
+      title: movie.title,
+      poster: movie.poster_path,
+      status: "saved",
+    });
 
-        <p className="movie-title">{movie.title}</p>
+    alert("Movie Saved ✅");
+  };
+
+  return (
+    <div className="movie-card">
+
+      <img
+        src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+        className="movie-poster"
+      />
+
+      <h4 className="movie-title">{movie.title}</h4>
+
+      {/* ✅ BUTTON ROW */}
+      <div className="movie-buttons">
+
+        <button onClick={handleTrailer}>
+          ▶ Trailer
+        </button>
+
+        <button onClick={handleSave}>
+          <FaBookmark /> Save
+        </button>
+
       </div>
 
-      {/* Trailer Modal */}
+      {/* 🎬 Modal */}
       {showTrailer && (
         <div className="modal">
           <div className="modal-content">
+            <button onClick={() => setShowTrailer(false)}>❌ Close</button>
 
-            {/* Close Button */}
-            <span
-              className="close-btn"
-              onClick={() => setShowTrailer(false)}
-            >
-              ✖
-            </span>
-
-            {/* YouTube Trailer */}
             <iframe
-              width="900"
-              height="500"
+              width="560"
+              height="315"
               src={`https://www.youtube.com/embed/${trailerKey}`}
-              title="Movie Trailer"
               allowFullScreen
-            ></iframe>
-
+            />
           </div>
         </div>
       )}
-    </>
+    </div>
   );
-};
-
-export default MovieCard;
+}

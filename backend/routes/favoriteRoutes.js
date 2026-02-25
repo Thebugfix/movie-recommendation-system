@@ -1,23 +1,55 @@
 const express = require("express");
 const router = express.Router();
-
 const Favorite = require("../models/Favorite");
-const {getUser}=require('../controllers/user');
 
+
+// ✅ SAVE MOVIE
 router.post("/", async (req, res) => {
-    const favorite = new Favorite(req.body);
-    await favorite.save();
-    res.json(favorite);
+  try {
+    const movie = new Favorite(req.body);
+    await movie.save();
+    res.json(movie);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-router.get("/", async (req, res) => {
-    const favorites = await Favorite.find();
-    res.json(favorites);
+
+// ✅ GET SAVED MOVIES
+router.get("/saved", async (req, res) => {
+  try {
+    const movies = await Favorite.find({ status: "saved" });
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-router.delete("/:id", async (req, res) => {
-    await Favorite.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted" });
+
+// ✅ GET WATCHED MOVIES
+router.get("/watched", async (req, res) => {
+  try {
+    const movies = await Favorite.find({ status: "watched" });
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+
+// ✅ MARK AS WATCHED
+router.put("/:id", async (req, res) => {
+  try {
+    const movie = await Favorite.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(movie);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;

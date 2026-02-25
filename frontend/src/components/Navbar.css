@@ -1,0 +1,24 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: black;
+  padding: 15px;
+}
+
+.menu-btn {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.navbar h1 {
+  color: #00bfff;
+}
+
+.navbar input {
+  padding: 8px;
+  border-radius: 5px;
+}
