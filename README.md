@@ -154,12 +154,6 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
-
-This project is licensed under the ISC License - see the LICENSE file for details.
-
----
-
 ## 📧 Support
 
 For questions or issues, please create a GitHub issue or contact the repository owner.
