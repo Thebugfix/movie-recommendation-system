@@ -269,12 +269,12 @@ body {
 .trailer-modal-bg.open { display: flex; }
 
 .trailer-modal-box {
+  width: 640px;
+  max-width: calc(100vw - 32px);
   background: #111;
   border-radius: 16px;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  width: 600px;
-  max-width: calc(100vw - 32px);
+  overflow: hidden;      /* critical — clips the iframe corners */
+  border: 0.5px solid rgba(255,255,255,0.1);
 }
 
 .trailer-modal-header {

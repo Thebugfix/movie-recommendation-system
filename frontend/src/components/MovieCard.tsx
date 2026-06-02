@@ -69,24 +69,37 @@ export default function MovieCard({ movie }: any) {
 
       {/* Modal */}
       {showTrailer && (
-        <div className="trailer-modal-bg" onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            setShowTrailer(false);
-            setTrailerKey("");
-          }
-        }}>
+        <div
+          className="trailer-modal-bg"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowTrailer(false);
+              setTrailerKey("");
+            }
+          }}
+        >
           <div className="trailer-modal-box">
             <div className="trailer-modal-header">
-              <span className="trailer-modal-title">{movie.title} — Trailer</span>
-              <button className="trailer-modal-close" onClick={() => { setShowTrailer(false); setTrailerKey(""); }}>✕</button>
+              <span className="trailer-modal-title">{movie.title}</span>
+              <button
+                className="trailer-modal-close"
+                onClick={() => { setShowTrailer(false); setTrailerKey(""); }}
+              >
+                ✕
+              </button>
             </div>
+
             <div className="trailer-modal-video">
               <iframe
                 src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+                width="100%"
+                height="100%"
+                allow="autoplay; encrypted-media; fullscreen"
                 allowFullScreen
-                allow="autoplay; encrypted-media"
+                style={{ border: 'none', display: 'block' }}
               />
             </div>
+
           </div>
         </div>
       )}
