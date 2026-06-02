@@ -92,11 +92,8 @@ export default function MovieCard({ movie }: any) {
             <div className="trailer-modal-video">
               <iframe
                 src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
-                width="100%"
-                height="100%"
                 allow="autoplay; encrypted-media; fullscreen"
                 allowFullScreen
-                style={{ border: 'none', display: 'block' }}
               />
             </div>
 
