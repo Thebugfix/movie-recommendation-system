@@ -1,24 +1,20 @@
 import { useState } from "react";
 import { fetchMovieTrailer } from "../services/api";
 import { saveMovie } from "../services/favoriteApi";
-import { FaBookmark } from "react-icons/fa";
 
 export default function MovieCard({ movie }: any) {
-
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerKey, setTrailerKey] = useState("");
+  const [saved, setSaved] = useState(false);
 
-  // 🎬 Trailer
   const handleTrailer = async () => {
     const trailer = await fetchMovieTrailer(movie.id);
-
     if (trailer) {
       setTrailerKey(trailer.key);
       setShowTrailer(true);
     }
   };
 
-  // save
   const handleSave = async () => {
     await saveMovie({
       movieId: movie.id,
@@ -26,48 +22,84 @@ export default function MovieCard({ movie }: any) {
       poster: movie.poster_path,
       status: "saved",
     });
-
-    alert("Movie Saved ✅");
+    setSaved(true);
   };
 
   return (
-    <div className="movie-card">
+    <>
+      <div className="movie-card">
+        <div className="movie-poster-wrap">
+          <img
+            src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+            alt={movie.title}
+            className="movie-poster"
+          />
+          {movie.vote_average && (
+            <span className="movie-rating">★ {movie.vote_average.toFixed(1)}</span>
+          )}
+          <div className="movie-overlay">
+            <div className="movie-btn-row">
+              <button className="movie-btn movie-btn-trailer" onClick={handleTrailer}>
+                <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+                  <path d="M1 1.5L9 6L1 10.5V1.5Z" fill="white" />
+                </svg>
+                Trailer
+              </button>
+              <button
+                className={`movie-btn movie-btn-save ${saved ? "saved" : ""}`}
+                onClick={handleSave}
+              >
+                <svg width="11" height="13" viewBox="0 0 11 13" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+                  <path d="M1 1h9v11l-4.5-3L1 12V1z" />
+                </svg>
+                {saved ? "Saved" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <img
-        src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-        className="movie-poster"
-      />
-
-      <h4 className="movie-title">{movie.title}</h4>
-
-      {/* ✅ BUTTON ROW */}
-      <div className="movie-buttons">
-
-        <button onClick={handleTrailer}>
-          ▶ Trailer
-        </button>
-
-        <button onClick={handleSave}>
-          <FaBookmark /> Save
-        </button>
-
+        <div className="movie-body">
+          {movie.genre && <p className="movie-genre">{movie.genre}</p>}
+          <h4 className="movie-title">{movie.title}</h4>
+          {movie.release_date && (
+            <p className="movie-meta">{movie.release_date.slice(0, 4)}</p>
+          )}
+        </div>
       </div>
 
-      {/* 🎬 Modal */}
+      {/* Modal */}
       {showTrailer && (
-        <div className="modal">
-          <div className="modal-content">
-            <button onClick={() => setShowTrailer(false)}>❌ Close</button>
+        <div
+          className="trailer-modal-bg"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowTrailer(false);
+              setTrailerKey("");
+            }
+          }}
+        >
+          <div className="trailer-modal-box">
+            <div className="trailer-modal-header">
+              <span className="trailer-modal-title">{movie.title}</span>
+              <button
+                className="trailer-modal-close"
+                onClick={() => { setShowTrailer(false); setTrailerKey(""); }}
+              >
+                ✕
+              </button>
+            </div>
 
-            <iframe
-              width="560"
-              height="315"
-              src={`https://www.youtube.com/embed/${trailerKey}`}
-              allowFullScreen
-            />
+            <div className="trailer-modal-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+              />
+            </div>
+
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
